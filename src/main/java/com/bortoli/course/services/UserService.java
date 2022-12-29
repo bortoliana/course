@@ -2,12 +2,16 @@ package com.bortoli.course.services;
 
 import com.bortoli.course.entities.User;
 import com.bortoli.course.repositories.UserRepository;
+import com.bortoli.course.services.excption.DatabaseException;
 import com.bortoli.course.services.excption.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 
 @Service
 public class UserService {
@@ -29,7 +33,13 @@ public class UserService {
     }
 
     public void delete (Long id){
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException(id);
+        }catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getLocalizedMessage());
+        }
     }
 
     public User update(Long id, User obj){
