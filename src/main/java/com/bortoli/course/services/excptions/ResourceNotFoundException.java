@@ -1,4 +1,4 @@
-package com.bortoli.course.services.excption;
+package com.bortoli.course.services.excptions;
 
 public class ResourceNotFoundException extends RuntimeException{
 
